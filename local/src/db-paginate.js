@@ -2,6 +2,7 @@
 import React from 'react'
 import './table-style.css'
 import './paginate-style.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function DBPaginate() {
     let [data, setData] = React.useState('')

@@ -3,6 +3,7 @@ const app = express()
 const Product = require('./model')
 const port = 8000
 
+
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
@@ -42,7 +43,8 @@ app.get('/api/db/paginate', (request, response) => {
 		limit: 2     //แสดงผลหน้าละ 2 รายการ (ข้อมูลมีน้อย)            
 	}
 
-	Product.paginate({}, options, (err, result) => {
+	Product
+    .paginate({}, options, (err, result) => {
         response.json(result)
     })
 })
@@ -70,6 +72,40 @@ app.get('/api/db/search', (request, response) => {
     })
 })
 
+app.post('/api/db/update', (request, response) => {
+    let form = request.body
+    let data = {
+        name: form.name || '',
+        price: form.price || 0,
+        detail:form.detail || '',
+        date_added: new Date(date.parse(form.date_added)) || new Date()
+    }
+    
+    Product
+    .findByIdAndUpdate(form._id, data, { useFindAndModify: false})
+    .exec(err => {
+        if (err){
+            response.json({error: err})
+            return
+            }
+        })
+
+   Product.find().exec((err, docs) => { response.jso(docs) })
+})
+
+app.post('/api/db/delete', (request, response) => {
+    let _id = request.body.id
+    Product
+    .findByIdAndDelete(_id, { useFindAndModify: false})
+    .exec(err => {
+        if (err){
+            response.json({error: err})
+            return
+            }
+        })
+
+   Product.find().exec((err, docs) => { response.jso(docs) })
+})
 app.listen(port, () => {
 	console.log('Server listening on port ' + port)
 })
